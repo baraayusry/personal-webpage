@@ -1,0 +1,40 @@
+@import "tailwindcss";
+@reference "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Optional: brand color (so bg-brand-600 etc. work) */
+@theme {
+  --color-brand-50:  var(--color-sky-50);
+  --color-brand-100: var(--color-sky-100);
+  --color-brand-200: var(--color-sky-200);
+  --color-brand-300: var(--color-sky-300);
+  --color-brand-400: var(--color-sky-400);
+  --color-brand-500: var(--color-sky-500);
+  --color-brand-600: var(--color-sky-600);
+  --color-brand-700: var(--color-sky-700);
+  --color-brand-800: var(--color-sky-800);
+  --color-brand-900: var(--color-sky-900);
+}
+
+/* Global typography tweaks */
+:root { --radius: 16px; }
+
+html, body, #root { height: 100%; }
+
+/* Use separate rule for dark instead of `dark:` inside @apply */
+body { @apply bg-white text-slate-900; }
+.dark body { @apply bg-slate-950 text-slate-100; }
+
+.container-px { @apply px-4 sm:px-6 lg:px-8; }
+.section-y { @apply py-16 sm:py-20; }
+.section-title { @apply text-3xl sm:text-4xl font-semibold tracking-tight; }
+
+/* Avoid variant in @apply; use a dark selector */
+.section-subtitle { @apply text-slate-600; }
+.dark .section-subtitle { @apply text-slate-400; }
+
+.card { @apply rounded-2xl shadow-sm ring-1 ring-slate-200 bg-white/80 backdrop-blur; }
+.dark .card { @apply ring-slate-800 bg-slate-900/60; }
+
+/* Smooth anchor offset for sticky header */
+.scroll-mt { scroll-margin-top: 5rem; }
