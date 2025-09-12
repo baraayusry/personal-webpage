@@ -60,7 +60,12 @@ animate={{ opacity: 1, scale: 1 }}
 transition={{ duration: 0.6, delay: 0.1 }}
 className="flex justify-center"
 >
-<img src="/profile.jpg" alt="Profile" className="h-40 w-40 md:h-56 md:w-56 rounded-full ring-2 ring-brand-400 object-cover" onError={(e) => ((e.currentTarget.src = 'https://placehold.co/224'))} />
+<img
+  src={site.profileImage}
+  alt={`${site.name} profile photo`}
+  className="h-40 w-40 md:h-56 md:w-56 rounded-full ring-2 ring-brand-400 object-cover"
+  onError={(e) => ((e.currentTarget.src = 'https://placehold.co/224'))}
+/>
 </motion.div>
 </div>
 <div className="mt-12" aria-hidden="true">
