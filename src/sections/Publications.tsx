@@ -7,7 +7,7 @@ import { publications } from '@/data/publications'
 export default function Publications() {
 return (
 <Container>
-<Section id="publications" title="Publications" subtitle="Selected papers and preprints.">
+<Section id="publications" title="Publications">
 <div className="space-y-4">
 {publications.map((pub) => (
 <Card key={pub.title}>
