@@ -1,14 +1,14 @@
 import Section from '@/components/Section' 
 import Timeline from '@/components/Timeline'
-import { experience } from '@/data/experience' 
-import type { ExperienceItem } from '@/types'
+import { education } from '@/data/education' 
+import type { EducationItem } from '@/types'
 
-export default function Experience() {
+export default function Education() {
   return (
-    <Section id="experience" title="Work Experience">
+    <Section id="education" title="Education">
       
-      <Timeline items={experience}>
-        {(item: ExperienceItem, isActive: boolean) => (
+      <Timeline items={education}>
+        {(item: EducationItem, isActive: boolean) => (
           <>
             <h3
               className={
@@ -16,7 +16,7 @@ export default function Experience() {
                 (isActive ? 'text-brand-600 dark:text-brand-300 text-2xl' : 'text-xl')
               }
             >
-              {item.title}
+              {item.degree}
             </h3>
             <div
               className={
@@ -27,12 +27,12 @@ export default function Experience() {
               {item.logo && (
                 <img
                   src={item.logo}
-                  alt={`${item.org} logo`}
+                  alt={`${item.university} logo`}
                   className="h-8 w-8 rounded-sm ring-1 ring-slate-200 dark:ring-slate-800 object-contain"
                 />
               )}
               <span>
-                {item.org}
+                {item.university}
                 {item.location ? ` • ${item.location}` : ''}
               </span>
             </div>

@@ -1,19 +1,28 @@
 export type ExperienceItem = {
-title: string
-org: string
-location?: string
-start: string
-end?: string
-bullets?: string[]
+  title: string
+  org: string
+  location?: string
+  logo?: string
+  start: string
+  end?: string
+  bullets?: string[]
 }
 
+export type EducationItem = {
+  degree: string
+  university: string
+  location?: string
+  logo?: string
+  start: string
+  end?: string
+  bullets?: string[]
+}
 
 export type ProjectItem = {
 title: string
 description: string
 tags: string[]
-link?: string
-repo?: string
+repo: string
 }
 
 

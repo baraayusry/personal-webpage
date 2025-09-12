@@ -1,24 +1,101 @@
-import type { ExperienceItem } from '@/types'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 
-
-export default function Timeline({ items }: { items: ExperienceItem[] }) {
-return (
-<ol className="relative border-s border-slate-200 dark:border-slate-800">
-{items.map((it, i) => (
-<li key={i} className="mb-10 ms-4">
-<div className="absolute w-3 h-3 bg-brand-500 rounded-full mt-2 -start-1.5 border border-white dark:border-slate-900"></div>
-<h3 className="text-lg font-semibold">{it.title}</h3>
-<p className="text-sm text-slate-600 dark:text-slate-400">{it.org}{it.location ? ` • ${it.location}` : ''}</p>
-<p className="text-sm mt-1">{it.start}{it.end ? ` — ${it.end}` : ' — present'}</p>
-{it.bullets && (
-<ul className="list-disc ms-5 mt-2 space-y-1">
-{it.bullets.map((b, j) => (
-<li key={j} className="text-slate-700 dark:text-slate-300">{b}</li>
-))}
-</ul>
-)}
-</li>
-))}
-</ol>
-)
+type TimelineProps<T> = {
+  items: T[]
+  children: (item: T, isActive: boolean) => ReactNode
 }
+
+const Timeline = <T,>({ items, children }: TimelineProps<T>) => {
+  const itemRefs = useRef<(HTMLLIElement | null)[]>([])
+  const [activeIndex, setActiveIndex] = useState(-1)
+
+  useEffect(() => {
+    let ticking = false
+
+    const updateActive = () => {
+      const els = itemRefs.current.filter(Boolean) as HTMLLIElement[]
+      if (!els.length) return
+
+      if (window.scrollY < 8) {
+        if (activeIndex !== 0) setActiveIndex(0)
+        return
+      }
+      const viewportCenter = window.innerHeight / 2
+      let closest = -1
+      let closestDist = Number.POSITIVE_INFINITY
+      els.forEach((el, i) => {
+        const rect = el.getBoundingClientRect()
+        const elCenter = rect.top + rect.height / 2
+        const dist = Math.abs(elCenter - viewportCenter)
+        if (dist < closestDist) {
+          closestDist = dist
+          closest = i
+        }
+      })
+      if (closest !== -1 && closest !== activeIndex) {
+        setActiveIndex(closest)
+      }
+    }
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          updateActive()
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+
+    updateActive()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [items.length, activeIndex])
+
+  return (
+    <ol className="relative border-s border-slate-200 dark:border-slate-800">
+      {items.map((item, i) => {
+        const isActive = i === activeIndex
+        const key = (item as { id?: string | number }).id ?? i
+        
+        return (
+          <li
+            key={key}
+            ref={(el) => { itemRefs.current[i] = el }}
+            className={
+              `relative mb-10 ps-8 transition-all duration-300 ease-out will-change-transform ` +
+              (isActive ? 'opacity-100 translate-x-0' : 'opacity-75 translate-x-[2px]')
+            }
+          >
+            <div
+              className={
+                `absolute start-0 -translate-x-1/2 top-3 h-3 w-3 rounded-full border z-0 ` +
+                `border-white dark:border-slate-900 transition-all duration-300 ` +
+                (isActive
+                  ? 'bg-brand-500 ring-2 ring-brand-500/40'
+                  : 'bg-slate-300 dark:bg-slate-700')
+              }
+            />
+            <div className="relative z-10">
+             
+              {typeof children === 'function' ? (
+                children(item, isActive)
+              ) : process.env.NODE_ENV === 'development' ? (
+                <p style={{ color: 'red' }}>
+                  Error: The children of Timeline must be a function.
+                </p>
+              ) : null}
+            </div>
+          </li>
+        )
+      })}
+    </ol>
+  )
+}
+
+export default Timeline
